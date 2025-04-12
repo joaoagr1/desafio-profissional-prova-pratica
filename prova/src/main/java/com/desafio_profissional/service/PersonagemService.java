@@ -39,18 +39,6 @@ public class PersonagemService extends CrudService<Personagem, Long> {
 
     public void adicionarItemMagico(Long personagemId, ItemMagico item) {
 
-        if (item.getTipo() == TipoItem.ARMA && item.getDefesa() != 0) {
-            throw new IllegalArgumentException("Itens do tipo ARMA devem ter defesa igual a 0");
-        }
-
-        if (item.getTipo() == TipoItem.ARMADURA && item.getForca() != 0) {
-            throw new IllegalArgumentException("Itens do tipo ARMADURA devem ter força igual a 0");
-        }
-
-        if (item.getForca() == 0 && item.getDefesa() == 0) {
-            throw new IllegalArgumentException("Item Mágico não pode ter força e defesa ambos zerados");
-        }
-
         itemMagicoValidator.valid(item);
 
         Personagem personagem = repository.findById(personagemId)

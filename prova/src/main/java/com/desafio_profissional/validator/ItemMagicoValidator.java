@@ -9,17 +9,7 @@ public class ItemMagicoValidator {
 
     public void valid(ItemMagico entity) {
 
-        if (entity.getTipo() == TipoItem.ARMA && entity.getDefesa() != 0) {
-            throw new IllegalArgumentException("Itens do tipo ARMA devem ter defesa igual a 0");
-        }
-
-        if (entity.getTipo() == TipoItem.ARMADURA && entity.getForca() != 0) {
-            throw new IllegalArgumentException("Itens do tipo ARMADURA devem ter força igual a 0");
-        }
-
-        if (entity.getForca() == 0 && entity.getDefesa() == 0) {
-            throw new IllegalArgumentException("Item Mágico não pode ter força e defesa ambos zerados");
-        }
+        System.out.println("Validando item mágico: " + entity.getNome());
         validarArmaComDefesa(entity);
         validarArmaduraComForca(entity);
         validarItemZerado(entity);

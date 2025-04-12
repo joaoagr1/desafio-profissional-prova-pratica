@@ -10,6 +10,7 @@ import com.desafio_profissional.util.CrudService;
 import com.desafio_profissional.validator.ItemMagicoValidator;
 import com.desafio_profissional.validator.PersonagemValidator;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,18 @@ import java.util.Optional;
 public class ItemMagicoService extends CrudService<ItemMagico, Long> {
 
     private final PersonagemRepository personagemRepository;
-    private ItemMagicoValidator itemMagicoValidator;
+    @Autowired
+    private final PersonagemValidator personagemValidator;
+    private final ItemMagicoValidator itemMagicoValidator;
 
-    public ItemMagicoService(ItemMagicoRepository repository, PersonagemRepository personagemRepository) {
+    public ItemMagicoService(ItemMagicoRepository repository,
+                             PersonagemRepository personagemRepository,
+                             PersonagemValidator personagemValidator,
+                             ItemMagicoValidator itemMagicoValidator) {
         super(repository);
         this.personagemRepository = personagemRepository;
+        this.personagemValidator = personagemValidator;
+        this.itemMagicoValidator = itemMagicoValidator;
     }
 
     public List<ItemMagico> listarItensPorPersonagem(Long personagemId) {

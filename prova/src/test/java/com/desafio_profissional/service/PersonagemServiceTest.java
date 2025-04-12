@@ -40,11 +40,9 @@ class PersonagemServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        personagemService = new PersonagemService(
-                personagemRepository,
-                personagemValidator,
-                itemMagicoValidator);
+        itemMagicoValidator = new ItemMagicoValidator();
+        personagemValidator = new PersonagemValidator(); // ou um mock, se quiser
+        personagemService = new PersonagemService(personagemRepository, personagemValidator , itemMagicoValidator);
 
     }
 
@@ -214,7 +212,6 @@ class PersonagemServiceTest {
                 TipoItem.ARMA
         );
 
-//        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             personagemService.adicionarItemMagico(1L, arma);
