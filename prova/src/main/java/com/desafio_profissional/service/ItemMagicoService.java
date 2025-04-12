@@ -7,6 +7,8 @@ import com.desafio_profissional.enums.TipoItem;
 import com.desafio_profissional.repository.ItemMagicoRepository;
 import com.desafio_profissional.repository.PersonagemRepository;
 import com.desafio_profissional.util.CrudService;
+import com.desafio_profissional.validator.ItemMagicoValidator;
+import com.desafio_profissional.validator.PersonagemValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class ItemMagicoService extends CrudService<ItemMagico, Long> {
 
     private final PersonagemRepository personagemRepository;
+    private ItemMagicoValidator itemMagicoValidator;
 
     public ItemMagicoService(ItemMagicoRepository repository, PersonagemRepository personagemRepository) {
         super(repository);
@@ -64,5 +67,10 @@ public class ItemMagicoService extends CrudService<ItemMagico, Long> {
         return personagem.getItensMagicos().stream()
                 .filter(item -> TipoItem.AMULETO.equals(item.getTipo()))
                 .findFirst();
+    }
+
+    @Override
+    public void beforeSave(ItemMagico entity) {
+        itemMagicoValidator.valid(entity);
     }
 }

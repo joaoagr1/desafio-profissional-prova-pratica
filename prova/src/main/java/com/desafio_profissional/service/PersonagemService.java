@@ -6,52 +6,52 @@ import com.desafio_profissional.enums.ClassePersonagem;
 import com.desafio_profissional.enums.TipoItem;
 import com.desafio_profissional.repository.PersonagemRepository;
 import com.desafio_profissional.util.CrudService;
+import com.desafio_profissional.validator.ItemMagicoValidator;
+import com.desafio_profissional.validator.PersonagemValidator;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
 
 @Service
 public class PersonagemService extends CrudService<Personagem, Long> {
-    public PersonagemService(PersonagemRepository repository) {
+
+    @Autowired
+    private final PersonagemValidator personagemValidator;
+    @Autowired
+    private ItemMagicoValidator itemMagicoValidator;
+
+    public PersonagemService(PersonagemRepository repository,
+                             PersonagemValidator personagemValidator,
+                             ItemMagicoValidator itemMagicoValidator) {
         super(repository);
+        this.personagemValidator = personagemValidator;
+        this.itemMagicoValidator = itemMagicoValidator;
     }
 
     @Override
     public void beforeSave(Personagem entity) {
-        validarDistribuicaoDePontos(entity);
-        validarQuantidadeDeAmuletos(entity);
-        validaClassePersonagem(entity);
-    }
+        personagemValidator.valid(entity);
 
-    private void validaClassePersonagem(Personagem entity) {
-        ClassePersonagem classe = entity.getClasse();
-
-        if (classe == null || !EnumSet.allOf(ClassePersonagem.class).contains(classe)) {
-            throw new IllegalArgumentException("Classe de personagem inválida");
-        }
-    }
-
-    private void validarDistribuicaoDePontos(Personagem entity) {
-        int forca = entity.getForcaBase();
-        int defesa = entity.getDefesaBase();
-
-        if ((forca + defesa) != 10) {
-            throw new IllegalArgumentException("A soma de força e defesa deve ser exatamente 10 pontos");
-        }
-    }
-
-    private void validarQuantidadeDeAmuletos(Personagem entity) {
-        long amuletos = entity.getItensMagicos().stream()
-                .filter(item -> TipoItem.AMULETO.equals(item.getTipo()))
-                .count();
-
-        if (amuletos > 1) {
-            throw new IllegalArgumentException("O personagem só pode ter um item do tipo AMULETO");
-        }
     }
 
     public void adicionarItemMagico(Long personagemId, ItemMagico item) {
+
+        if (item.getTipo() == TipoItem.ARMA && item.getDefesa() != 0) {
+            throw new IllegalArgumentException("Itens do tipo ARMA devem ter defesa igual a 0");
+        }
+
+        if (item.getTipo() == TipoItem.ARMADURA && item.getForca() != 0) {
+            throw new IllegalArgumentException("Itens do tipo ARMADURA devem ter força igual a 0");
+        }
+
+        if (item.getForca() == 0 && item.getDefesa() == 0) {
+            throw new IllegalArgumentException("Item Mágico não pode ter força e defesa ambos zerados");
+        }
+
+        itemMagicoValidator.valid(item);
 
         Personagem personagem = repository.findById(personagemId)
                 .orElseThrow(() -> new EntityNotFoundException("Personagem não encontrado"));
@@ -68,4 +68,13 @@ public class PersonagemService extends CrudService<Personagem, Long> {
     }
 
 
+    public ItemMagico buscarAmuletoDoPersonagem(long l) {
+        Personagem personagem = repository.findById(l)
+                .orElseThrow(() -> new EntityNotFoundException("Personagem não encontrado"));
+
+        return personagem.getItensMagicos().stream()
+                .filter(item -> TipoItem.AMULETO.equals(item.getTipo()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum amuleto encontrado para o personagem"));
+    }
 }

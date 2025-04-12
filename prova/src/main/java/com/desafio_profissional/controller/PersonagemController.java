@@ -24,4 +24,11 @@ public class PersonagemController extends CrudController<Personagem, Long, Perso
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/buscar-amuleto/{personagemId}")
+    public ResponseEntity<ItemMagico> buscarAmuleto(
+            @PathVariable Long personagemId
+    ) {
+        ItemMagico amuleto = service.buscarAmuletoDoPersonagem(personagemId);
+        return ResponseEntity.ok(amuleto);
+    }
 }

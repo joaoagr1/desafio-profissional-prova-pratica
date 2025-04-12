@@ -5,12 +5,16 @@ import com.desafio_profissional.domain.Personagem;
 import com.desafio_profissional.enums.TipoItem;
 import com.desafio_profissional.repository.PersonagemRepository;
 import com.desafio_profissional.util.Fixtures;
+import com.desafio_profissional.validator.ItemMagicoValidator;
+import com.desafio_profissional.validator.PersonagemValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class PersonagemServiceTest {
 
     @Mock
@@ -27,9 +32,20 @@ class PersonagemServiceTest {
     @InjectMocks
     private PersonagemService personagemService;
 
+    @Mock
+    private ItemMagicoValidator itemMagicoValidator;
+
+    @Mock
+    private PersonagemValidator personagemValidator;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        personagemService = new PersonagemService(
+                personagemRepository,
+                personagemValidator,
+                itemMagicoValidator);
+
     }
 
     @Test
@@ -198,7 +214,7 @@ class PersonagemServiceTest {
                 TipoItem.ARMA
         );
 
-        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
+//        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             personagemService.adicionarItemMagico(1L, arma);
@@ -218,16 +234,46 @@ class PersonagemServiceTest {
 
     @Test
     void deveBuscarAmuletoDoPersonagem() {
-        // Teste para buscar o amuleto de um personagem
+        Personagem personagem = Fixtures.createPersonagem(
+                "Gandalf",
+                5,
+                5,
+                "MAGO"
+        );
+
+        ItemMagico amuleto = Fixtures.createItemMagico(
+                "Amuleto da Sorte",
+                2,
+                0,
+                TipoItem.AMULETO
+        );
+
+        personagem.getItensMagicos().add(amuleto);
+
+        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
+
+        ItemMagico amuletoEncontrado = personagemService.buscarAmuletoDoPersonagem(1L);
+
+        assertEquals(amuleto, amuletoEncontrado);
+
     }
 
     @Test
     void deveLancarErroAoBuscarAmuletoInexistenteDoPersonagem() {
-        // Teste para lançar erro ao buscar um amuleto inexistente de um personagem
+        Personagem personagem = Fixtures.createPersonagem(
+                "Gandalf",
+                5,
+                5,
+                "MAGO"
+        );
+
+        personagem.setId(1L);
+
+        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            personagemService.buscarAmuletoDoPersonagem(1L);
+        });
     }
 
-    @Test
-    void deveRemoverItemMagicoDoPersonagem() {
-        // Teste para remover um item mágico de um personagem
-    }
 }
