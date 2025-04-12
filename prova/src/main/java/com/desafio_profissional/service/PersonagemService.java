@@ -52,6 +52,7 @@ public class PersonagemService extends CrudService<Personagem, Long> {
     }
 
     public void adicionarItemMagico(Long personagemId, ItemMagico item) {
+
         Personagem personagem = repository.findById(personagemId)
                 .orElseThrow(() -> new EntityNotFoundException("Personagem não encontrado"));
 

@@ -35,13 +35,20 @@ public class Personagem {
     @Min(0)
     @Max(10)
     private int forcaBase;
-    
+
     @Min(0)
     @Max(10)
     private int defesaBase;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ItemMagico> itensMagicos = new ArrayList<>();
+
+    public Personagem(String nome, int forcaBase, int defesaBase, ClassePersonagem classePersonagem) {
+        this.nome = nome;
+        this.forcaBase = forcaBase;
+        this.defesaBase = defesaBase;
+        this.classe = classePersonagem;
+    }
 
 
     @Transient
