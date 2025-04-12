@@ -35,44 +35,7 @@ public class Personagem {
     @Min(0)
     @Max(10)
     private int forcaBase;
-
-    public Long getId() {
-        return id;
-    }
-
-    public @NotBlank String getNome() {
-        return nome;
-    }
-
-    public @NotBlank String getNomeAventureiro() {
-        return nomeAventureiro;
-    }
-
-    public ClassePersonagem getClasse() {
-        return classe;
-    }
-
-    @Min(1)
-    public int getLevel() {
-        return level;
-    }
-
-    @Min(0)
-    @Max(10)
-    public int getForcaBase() {
-        return forcaBase;
-    }
-
-    @Min(0)
-    @Max(10)
-    public int getDefesaBase() {
-        return defesaBase;
-    }
-
-    public List<ItemMagico> getItensMagicos() {
-        return itensMagicos;
-    }
-
+    
     @Min(0)
     @Max(10)
     private int defesaBase;

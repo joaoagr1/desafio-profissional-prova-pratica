@@ -1,13 +1,13 @@
 package com.desafio_profissional.domain;
 
 import com.desafio_profissional.enums.TipoItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 @Entity
@@ -35,7 +35,8 @@ public class ItemMagico {
     private int defesa;
 
 
-    @OneToOne
+    @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "personagem_id")
     private Personagem personagem;
 
@@ -53,18 +54,6 @@ public class ItemMagico {
         if (forca == 0 && defesa == 0) {
             throw new IllegalArgumentException("Item Mágico não pode ter força e defesa ambos zerados");
         }
-    }
-
-    public int getForca() {
-        return this.forca;
-    }
-
-    public int getDefesa() {
-        return this.defesa;
-    }
-
-    public TipoItem getTipo() {
-        return this.tipo;
     }
 
 
