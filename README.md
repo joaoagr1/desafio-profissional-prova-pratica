@@ -1,6 +1,7 @@
 # 🧙‍♂️ API de Personagens e Itens Mágicos
 
 Esta API permite criar, atualizar, deletar e interagir com personagens e seus itens mágicos.
+(Construção de testes unitários em progresso)
 
 ## 🌐 Base URL
 
