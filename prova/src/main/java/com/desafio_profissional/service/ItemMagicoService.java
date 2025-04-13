@@ -22,6 +22,7 @@ public class ItemMagicoService extends CrudService<ItemMagico, Long> {
     private final PersonagemRepository personagemRepository;
     @Autowired
     private final PersonagemValidator personagemValidator;
+    @Autowired
     private final ItemMagicoValidator itemMagicoValidator;
 
     public ItemMagicoService(ItemMagicoRepository repository,
@@ -42,6 +43,9 @@ public class ItemMagicoService extends CrudService<ItemMagico, Long> {
     }
 
     public void adicionarItemMagico(Long personagemId, ItemMagico item) {
+
+        itemMagicoValidator.valid(item);
+
         Personagem personagem = personagemRepository.findById(personagemId)
                 .orElseThrow(() -> new EntityNotFoundException("Personagem não encontrado"));
 
